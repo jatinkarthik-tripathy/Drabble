@@ -53,12 +53,14 @@ class _MyHomePageState extends State<MyHomePage> {
               pinned: true,
               backgroundColor: Theme.of(context).primaryColor,
               flexibleSpace: FlexibleSpaceBar(
+                centerTitle: true,
                 title: Text(
                   "Drabble",
                   style: TextStyle(
                     color: Theme.of(context).accentColor,
                     fontSize: 35,
-                    fontWeight: FontWeight.w800
+                    fontWeight: FontWeight.w800,
+
                   ),
                 ),
               ),
@@ -80,17 +82,20 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
             SliverFillRemaining(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                decoration: new BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
-                  borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(40.0),
-                    topRight: const Radius.circular(40.0),
+              child: FractionallySizedBox(
+                heightFactor: 0.93,
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
+                  decoration: new BoxDecoration(
+                    color: Theme.of(context).backgroundColor,
+                    borderRadius: new BorderRadius.all(
+                      Radius.circular(40),
+                    ),
                   ),
+                  width: 300,
+                  height: 400,
                 ),
-                width: 300,
-                height: 400,
               ),
             ),
           ],
