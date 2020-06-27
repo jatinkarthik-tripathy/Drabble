@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:animated_splash/animated_splash.dart';
 
-void main() => runApp(MyApp());
+// void main() => runApp(MyApp());
+void main() {
+  runApp(
+    MaterialApp(
+      home: AnimatedSplash(
+        imagePath: 'assets/images/drabble.png',
+        home: MyApp(),
+        duration: 3000,
+        type: AnimatedSplashType.StaticDuration,
+      ),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -11,9 +23,8 @@ class MyApp extends StatelessWidget {
       title: 'Drabbles',
       theme: ThemeData(
         backgroundColor: Color(0xFF2C3D63),
-        primaryColor: Color(0xFFAADCCA),
-        accentColor: Color(0xFFF7F8F3),
-        buttonColor: Color(0xFFFF6F5E),
+        primaryColor: Color(0xFFF7F8F3),
+        accentColor: Color(0xFFFF6F5E),
       ),
       home: MyHomePage(title: 'Drabbles'),
     );
@@ -40,13 +51,37 @@ class _MyHomePageState extends State<MyHomePage> {
               floating: true,
               snap: true,
               pinned: true,
-              backgroundColor: Theme.of(context).accentColor,
+              backgroundColor: Theme.of(context).primaryColor,
               flexibleSpace: FlexibleSpaceBar(
-                title: Text("Drabbles"),
+                title: Text(
+                  "Drabble",
+                  style: TextStyle(
+                    color: Theme.of(context).accentColor,
+                    fontSize: 35,
+                    fontWeight: FontWeight.w800
+                  ),
+                ),
               ),
+              elevation: 0,
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(
+                  Icons.menu,
+                  color: Theme.of(context).backgroundColor,
+                ),
+                onPressed: null,
+              ),
+              actions: <Widget>[
+                new IconButton(
+                  icon: Icon(Icons.search),
+                  color: Theme.of(context).backgroundColor,
+                  onPressed: null,
+                ),
+              ],
             ),
             SliverFillRemaining(
               child: Container(
+                margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 decoration: new BoxDecoration(
                   color: Theme.of(context).backgroundColor,
                   borderRadius: new BorderRadius.only(
