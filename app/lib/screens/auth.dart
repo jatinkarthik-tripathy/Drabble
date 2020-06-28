@@ -10,7 +10,6 @@ class Auth extends StatefulWidget {
 
 class _AuthState extends State<Auth> {
   String name;
-  String email;
   String imageUrl;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -31,9 +30,10 @@ class _AuthState extends State<Auth> {
     assert(user.displayName != null);
     assert(user.photoUrl != null);
     name = user.displayName;
-    email = user.email;
     imageUrl = user.photoUrl;
-    print(name);
+    if (name.contains(" ")) {
+      name = name.substring(0, name.indexOf(" "));
+    };
     assert(!user.isAnonymous);
     assert(await user.getIdToken() != null);
 
@@ -41,12 +41,6 @@ class _AuthState extends State<Auth> {
     assert(user.uid == currentUser.uid);
 
     return 'signInWithGoogle succeeded: $user';
-  }
-
-  void signOutGoogle() async {
-    await googleSignIn.signOut();
-
-    print("User Sign Out");
   }
 
   @override
@@ -81,6 +75,8 @@ class _AuthState extends State<Auth> {
               builder: (context) {
                 return HomePage(
                   title: "Drabbles",
+                  name: name,
+                  imageUrl: imageUrl
                 );
               },
             ),

@@ -4,7 +4,7 @@ import 'package:animated_splash/animated_splash.dart';
 void main() {
   runApp(
     MaterialApp(
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       home: AnimatedSplash(
         imagePath: 'assets/images/drabble.png',
         home: MyApp(),
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       title: 'Drabble',
       theme: ThemeData(
         backgroundColor: Color(0xFF2C3D63),
