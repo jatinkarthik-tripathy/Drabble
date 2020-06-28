@@ -1,11 +1,10 @@
-import 'package:app/main.dart';
 import 'package:app/screens/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class Sidebar extends StatelessWidget {
-  String name;
-  String imgURL;
+  final String name;
+  final String imgURL;
   Sidebar({this.name, this.imgURL});
   final GoogleSignIn googleSignIn = GoogleSignIn();
   void signOutGoogle() async {

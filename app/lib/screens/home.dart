@@ -1,19 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:app/screens/sidebar.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
-  String name;
-  String imageUrl;
+  final String uid;
+  final String name;
+  final String imageUrl;
   HomePage({
     Key key,
     this.title,
+    this.uid,
     this.name,
     this.imageUrl,
   }) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState(
+        uid: uid,
         name: name,
         imageUrl: imageUrl,
       );
@@ -22,10 +26,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String name;
   String imageUrl;
+  String uid;
+  final firestoreInstance = Firestore.instance;
   _HomePageState({
+    this.uid,
     this.name,
     this.imageUrl,
   });
+
+  void _addEntry() {
+    firestoreInstance
+        .collection(uid)
+        .add({"title": "first Drabble", "body": "testing"}).then((value) {
+      print(value.documentID);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,10 +78,9 @@ class _HomePageState extends State<HomePage> {
                 //   onPressed: () => {},
                 // ),
                 new IconButton(
-                  icon: Icon(Icons.add),
-                  color: Theme.of(context).backgroundColor,
-                  onPressed: () => {},
-                ),
+                    icon: Icon(Icons.add),
+                    color: Theme.of(context).backgroundColor,
+                    onPressed: _addEntry),
               ],
             ),
             SliverFillRemaining(
@@ -79,6 +94,35 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: new BorderRadius.all(
                       Radius.circular(40),
                     ),
+                  ),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: firestoreInstance.collection(uid).snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.hasError)
+                        return new Text('Error: ${snapshot.error}');
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return new Text('Loading...');
+                        default:
+                          return NotificationListener<ScrollUpdateNotification>(
+                            child: ListView(
+                              children: snapshot.data.documents
+                                  .map((DocumentSnapshot document) {
+                                return Container(
+                                  width: 200,
+                                  height: 20,
+                                  child: Text(document["title"]),
+                                  color: Theme.of(context).accentColor,
+                                );
+                              }).toList(),
+                            ),
+                            onNotification: (notification) {
+                               
+                            },
+                          );
+                      } // Switch
+                    }, // Builder
                   ),
                 ),
               ),
