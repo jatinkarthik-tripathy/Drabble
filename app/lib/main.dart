@@ -3,6 +3,7 @@ import 'package:app/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash/animated_splash.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(
@@ -22,6 +23,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Color(0xFFF7F8F3),
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Drabble',
@@ -57,6 +67,9 @@ class _RootState extends State<Root> {
       uid = _user.uid;
       name = _user.displayName;
       imageUrl = _user.photoUrl;
+      if (name.contains(" ")) {
+        name = name.substring(0, name.indexOf(" "));
+      }
       ret = "Success";
     } catch (e) {}
     return ret;

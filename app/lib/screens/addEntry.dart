@@ -61,7 +61,7 @@ class _EntryState extends State<Entry> {
   saveAlertDialog(BuildContext context) {
     Widget continueButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Continue"),
+      child: Text("Done"),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -70,7 +70,7 @@ class _EntryState extends State<Entry> {
       onPressed: () {
         _addEntry();
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        Navigator.of(context).push(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) {
               return HomePage(
@@ -81,6 +81,7 @@ class _EntryState extends State<Entry> {
               );
             },
           ),
+          ModalRoute.withName('/'),
         );
       },
     );
@@ -115,7 +116,7 @@ class _EntryState extends State<Entry> {
   cancelAlertDialog(BuildContext context) {
     Widget cancelButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Cancel"),
+      child: Text("No"),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -125,7 +126,7 @@ class _EntryState extends State<Entry> {
     );
     Widget continueButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Continue"),
+      child: Text("Yes"),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -134,7 +135,7 @@ class _EntryState extends State<Entry> {
       onPressed: () {
         _addEntry();
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        Navigator.of(context).push(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) {
               return HomePage(
@@ -145,6 +146,7 @@ class _EntryState extends State<Entry> {
               );
             },
           ),
+          ModalRoute.withName('/'),
         );
       },
     );
@@ -284,10 +286,9 @@ class _EntryState extends State<Entry> {
           label: Text(
             "Save",
             style: TextStyle(
-              fontSize: 25,
-              color: Theme.of(context).accentColor,
-              fontWeight: FontWeight.w900
-            ),
+                fontSize: 25,
+                color: Theme.of(context).accentColor,
+                fontWeight: FontWeight.w900),
           ),
           onPressed: () => saveAlertDialog(context),
           backgroundColor: Colors.transparent,

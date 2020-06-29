@@ -35,10 +35,64 @@ class _HomePageState extends State<HomePage> {
     this.imageUrl,
   });
 
+  _deleteAlert(BuildContext context, DocumentSnapshot doc) {
+    Widget yesBut = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text("Yes"),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        doc.reference.delete();
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+      },
+    );
+    Widget noBut = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text("No"),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "Delete Drabble",
+        style: TextStyle(color: Theme.of(context).backgroundColor),
+      ),
+      content: Text("Do you want to permanently delete your Drabble?"),
+      backgroundColor: Theme.of(context).primaryColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(15.0),
+        ),
+      ),
+      actions: [
+        yesBut,
+        noBut,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   _showPoem(BuildContext context, DocumentSnapshot doc) {
     Widget continueButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Continue"),
+      child: Text("Close"),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -58,13 +112,11 @@ class _HomePageState extends State<HomePage> {
       ),
       onPressed: () {
         Navigator.of(context, rootNavigator: true).pop('dialog');
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) {
-              return Entry(uid: uid, name: name, imageUrl: imageUrl, doc: doc);
-            },
-          )
-        );
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return Entry(uid: uid, name: name, imageUrl: imageUrl, doc: doc);
+          },
+        ));
       },
     );
     // set up the AlertDialog
@@ -101,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                       color: Theme.of(context).backgroundColor,
                       fontSize: 20,
                     ),
-                    textAlign: TextAlign.center,
+                    textAlign: TextAlign.left,
                   ),
                 ],
               ),
@@ -178,7 +230,10 @@ class _HomePageState extends State<HomePage> {
                   return Center(
                     child: Text(
                       'Loading...',
-                      style: TextStyle(fontSize: 50),
+                      style: TextStyle(
+                        fontSize: 50,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
                   );
                 default:
@@ -187,51 +242,64 @@ class _HomePageState extends State<HomePage> {
                         .map((DocumentSnapshot document) {
                       return Container(
                         width: MediaQuery.of(context).size.width * 0.7,
-                        height: MediaQuery.of(context).size.height * 0.07,
-                        padding: EdgeInsets.all(15),
-                        margin: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 4,
-                            ),
-                          ),
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01,),
+                        margin: EdgeInsets.fromLTRB(
+                          MediaQuery.of(context).size.height * 0.01,
+                          0,
+                          MediaQuery.of(context).size.height * 0.01,
+                          0
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        child: Column(
                           children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                document["title"],
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    document["title"],
+                                    overflow: TextOverflow.fade,
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.025,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  iconSize: 20.0,
+                                  icon: Icon(
+                                    Icons.description,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    _showPoem(context, document);
+                                  },
+                                ),
+                                IconButton(
+                                  iconSize: 20.0,
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    _deleteAlert(context, document);
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 5,
+                              child: Container(
+                                decoration: BoxDecoration(
                                   color: Theme.of(context).primaryColor,
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.025,
+                                  borderRadius: new BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
                                 ),
                               ),
-                            ),
-                            IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(
-                                Icons.description,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              onPressed: () {
-                                _showPoem(context, document);
-                              },
-                            ),
-                            IconButton(
-                              iconSize: 20.0,
-                              icon: Icon(
-                                Icons.delete,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              onPressed: () {
-                                document.reference.delete();
-                              },
                             ),
                           ],
                         ),

@@ -11,6 +11,64 @@ class Sidebar extends StatelessWidget {
     await googleSignIn.signOut();
   }
 
+  _logoutAlert(BuildContext context) {
+    Widget yesBut = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text("Yes"),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        signOutGoogle();
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) {
+          return Auth();
+        }), ModalRoute.withName('/'));
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+      },
+    );
+    Widget noBut = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text("No"),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: Text(
+        "Delete Drabble",
+        style: TextStyle(color: Theme.of(context).backgroundColor),
+      ),
+      content: Text("Do you want to log out?"),
+      backgroundColor: Theme.of(context).primaryColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(15.0),
+        ),
+      ),
+      actions: [
+        yesBut,
+        noBut,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
@@ -109,11 +167,7 @@ class Sidebar extends StatelessWidget {
               textAlign: TextAlign.left,
             ),
             onTap: () {
-              signOutGoogle();
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) {
-                return Auth();
-              }), ModalRoute.withName('/'));
+              _logoutAlert(context);
             },
           ),
           SizedBox(
