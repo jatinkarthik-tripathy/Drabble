@@ -35,7 +35,93 @@ class _HomePageState extends State<HomePage> {
     this.imageUrl,
   });
 
-  void _showPoem() {}
+  _showPoem(BuildContext context, DocumentSnapshot doc) {
+    Widget continueButton = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text("Continue"),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+      },
+    );
+    Widget editButton = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text("Edit"),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return Entry(uid: uid, name: name, imageUrl: imageUrl, doc: doc);
+            },
+          )
+        );
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: Theme.of(context).primaryColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10.0),
+        ),
+      ),
+      content: Container(
+        width: MediaQuery.of(context).size.width * 0.6,
+        height: MediaQuery.of(context).size.height * 0.6,
+        child: Column(
+          children: <Widget>[
+            Text(
+              doc["title"],
+              style: TextStyle(
+                color: Theme.of(context).backgroundColor,
+                fontSize: 25,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  Text(
+                    doc["body"],
+                    style: TextStyle(
+                      color: Theme.of(context).backgroundColor,
+                      fontSize: 20,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        editButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      child: alert,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -64,10 +150,7 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(
                     builder: (context) {
                       return Entry(
-                        uid: uid,
-                        name: name,
-                        imageUrl: imageUrl,
-                      );
+                          uid: uid, name: name, imageUrl: imageUrl, doc: null);
                     },
                   ),
                 );
@@ -119,21 +202,37 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            Text(
-                              document["title"],
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize:
-                                    MediaQuery.of(context).size.height * 0.025,
+                            Expanded(
+                              child: Text(
+                                document["title"],
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: MediaQuery.of(context).size.height *
+                                      0.025,
+                                ),
                               ),
                             ),
                             IconButton(
+                              iconSize: 20.0,
                               icon: Icon(
                                 Icons.description,
                                 color: Theme.of(context).primaryColor,
                               ),
-                              onPressed: _showPoem,
-                            )
+                              onPressed: () {
+                                _showPoem(context, document);
+                              },
+                            ),
+                            IconButton(
+                              iconSize: 20.0,
+                              icon: Icon(
+                                Icons.delete,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              onPressed: () {
+                                document.reference.delete();
+                              },
+                            ),
                           ],
                         ),
                         // color: Theme.of(context).accentColor,
