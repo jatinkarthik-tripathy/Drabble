@@ -18,8 +18,8 @@ class Sidebar extends StatelessWidget {
       decoration: new BoxDecoration(
         color: Theme.of(context).backgroundColor,
         borderRadius: new BorderRadius.only(
-          bottomRight: Radius.circular(40),
-          topRight: Radius.circular(40),
+          bottomRight: Radius.circular(25),
+          topRight: Radius.circular(25),
         ),
       ),
       padding: EdgeInsets.only(
