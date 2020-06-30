@@ -35,15 +35,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Color(0xFFF7F8F3),
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Drabble',
@@ -86,6 +81,16 @@ class _RootState extends State<Root> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
+    SharedPreferences.getInstance().then((prefs) {
+    bool darkModeOn = prefs.getBool('darkMode') ?? true;
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: (darkModeOn ? Color(0xFFF7F8F3) : Color(0xFF2C3D63)),
+        statusBarIconBrightness: (darkModeOn ? Brightness.dark : Brightness.light),
+      ),
+    );
+    });
+    
     String retString = await onStart();
     if (retString == "Success") {
       setState(() {

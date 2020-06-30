@@ -123,7 +123,7 @@ class _EntryState extends State<Entry> {
     Widget cancelButton = FlatButton(
       color: Theme.of(context).backgroundColor,
       child: Text(
-        "No",
+        "Cancel",
         style: TextStyle(color: Theme.of(context).primaryColor),
       ),
       shape: RoundedRectangleBorder(
@@ -133,7 +133,36 @@ class _EntryState extends State<Entry> {
       ),
       onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
     );
-    Widget continueButton = FlatButton(
+
+    Widget noButton = FlatButton(
+      color: Theme.of(context).backgroundColor,
+      child: Text(
+        "No",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(7.0),
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop('dialog');
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) {
+              return HomePage(
+                title: "Drabbles",
+                uid: widget.uid,
+                name: widget.name,
+                imageUrl: widget.imageUrl,
+              );
+            },
+          ),
+          ModalRoute.withName('/'),
+        );
+      },
+    );
+    Widget yesButton = FlatButton(
       color: Theme.of(context).backgroundColor,
       child: Text(
         "Yes",
@@ -180,8 +209,9 @@ class _EntryState extends State<Entry> {
         ),
       ),
       actions: [
+        yesButton,
+        noButton,
         cancelButton,
-        continueButton,
       ],
     );
 
@@ -196,119 +226,124 @@ class _EntryState extends State<Entry> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        drawer: Sidebar(
-          uid: uid,
-          name: widget.name,
-          imgURL: widget.imageUrl,
-        ),
-        appBar: AppBar(
-          title: Text(
-            "Drabble",
-            style: TextStyle(
-              color: Theme.of(context).accentColor,
-              fontSize: MediaQuery.of(context).size.height * 0.05,
-            ),
-            textAlign: TextAlign.center,
+    return WillPopScope(
+      onWillPop: () {
+        saveAlertDialog(context);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Theme.of(context).primaryColor,
+          drawer: Sidebar(
+            uid: uid,
+            name: widget.name,
+            imgURL: widget.imageUrl,
           ),
-          centerTitle: true,
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.cancel),
-              color: Theme.of(context).backgroundColor,
-              onPressed: () {
-                cancelAlertDialog(context);
-              },
-            ),
-          ],
-        ),
-        body: Container(
-          margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.87,
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.all(
-              Radius.circular(20),
-            ),
-          ),
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.all(15),
-                margin: EdgeInsets.all(10),
-                child: TextField(
-                  controller: _titleController,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: 25,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: "Title",
-                    hintStyle: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    border: new UnderlineInputBorder(
-                      borderSide:
-                          new BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                    focusedBorder: new UnderlineInputBorder(
-                      borderSide:
-                          new BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                    enabledBorder: new UnderlineInputBorder(
-                      borderSide:
-                          new BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                  ),
-                ),
+          appBar: AppBar(
+            title: Text(
+              "Drabble",
+              style: TextStyle(
+                color: Theme.of(context).accentColor,
+                fontSize: MediaQuery.of(context).size.height * 0.05,
               ),
-              Expanded(
-                child: ListView(children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(15),
-                    margin: EdgeInsets.all(10),
-                    child: TextField(
-                      controller: _bodyController,
-                      textInputAction: TextInputAction.newline,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: "Let your thoughts run free ...",
-                        hintStyle: TextStyle(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        border: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ]),
+              textAlign: TextAlign.center,
+            ),
+            centerTitle: true,
+            elevation: 0,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.cancel),
+                color: Theme.of(context).backgroundColor,
+                onPressed: () {
+                  cancelAlertDialog(context);
+                },
               ),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          label: Text(
-            "Save",
-            style: TextStyle(
-                fontSize: 25,
-                color: Theme.of(context).accentColor,
-                fontWeight: FontWeight.w900),
+          body: Container(
+            margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.87,
+            decoration: BoxDecoration(
+              color: Theme.of(context).backgroundColor,
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.all(15),
+                  margin: EdgeInsets.all(10),
+                  child: TextField(
+                    controller: _titleController,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 25,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: "Title",
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      border: new UnderlineInputBorder(
+                        borderSide: new BorderSide(
+                            color: Theme.of(context).primaryColor),
+                      ),
+                      focusedBorder: new UnderlineInputBorder(
+                        borderSide: new BorderSide(
+                            color: Theme.of(context).primaryColor),
+                      ),
+                      enabledBorder: new UnderlineInputBorder(
+                        borderSide: new BorderSide(
+                            color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      margin: EdgeInsets.all(10),
+                      child: TextField(
+                        controller: _bodyController,
+                        textInputAction: TextInputAction.newline,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: "Let your thoughts run free ...",
+                          hintStyle: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          disabledBorder: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ]),
+                ),
+              ],
+            ),
           ),
-          onPressed: () => saveAlertDialog(context),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          floatingActionButton: FloatingActionButton.extended(
+            label: Text(
+              "Save",
+              style: TextStyle(
+                  fontSize: 25,
+                  color: Theme.of(context).accentColor,
+                  fontWeight: FontWeight.w900),
+            ),
+            onPressed: () => saveAlertDialog(context),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
         ),
       ),
     );

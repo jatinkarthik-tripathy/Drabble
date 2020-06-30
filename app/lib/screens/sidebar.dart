@@ -4,6 +4,7 @@ import 'package:app/util/theme_changer.dart';
 import 'package:app/values/themes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,6 +35,12 @@ class _SidebarState extends State<Sidebar> {
         ? themeNotifier.setTheme(darkTheme)
         : themeNotifier.setTheme(lightTheme);
     var prefs = await SharedPreferences.getInstance();
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: (value ? Color(0xFFF7F8F3) : Color(0xFF2C3D63)),
+        statusBarIconBrightness: (value ? Brightness.dark : Brightness.light),
+      ),
+    );
     prefs.setBool('darkMode', value);
   }
 
@@ -54,7 +61,7 @@ class _SidebarState extends State<Sidebar> {
           Radius.circular(7.0),
         ),
       ),
-      onPressed: () async{
+      onPressed: () async {
         signOutGoogle();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) {
@@ -186,22 +193,14 @@ class _SidebarState extends State<Sidebar> {
           // SizedBox(
           //   height: 15,
           // ),
-          SizedBox(
-            height: 5,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: new BorderRadius.all(
-                  Radius.circular(5),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.015,
-          ),
           Row(
             children: <Widget>[
+              Text(
+                "Dark Mode",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: MediaQuery.of(context).size.height * 0.025),
+              ),
               Switch(
                 value: _darkTheme,
                 onChanged: (value) {
@@ -214,13 +213,21 @@ class _SidebarState extends State<Sidebar> {
                 inactiveTrackColor: Theme.of(context).primaryColor,
                 inactiveThumbColor: Theme.of(context).accentColor,
               ),
-              Text(
-                "Dark Mode",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: MediaQuery.of(context).size.height * 0.025),
-              )
             ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.015,
+          ),
+          SizedBox(
+            height: 5,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: new BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+            ),
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.015,
@@ -239,7 +246,7 @@ class _SidebarState extends State<Sidebar> {
             },
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.25,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
