@@ -2,6 +2,7 @@ import 'package:app/screens/about.dart';
 import 'package:app/screens/auth.dart';
 import 'package:app/util/theme_changer.dart';
 import 'package:app/values/themes.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +38,8 @@ class _SidebarState extends State<Sidebar> {
   }
 
   void signOutGoogle() async {
-    await googleSignIn.signOut();
+    await googleSignIn.disconnect();
+    await FirebaseAuth.instance.signOut();
   }
 
   _logoutAlert(BuildContext context) {
@@ -52,7 +54,7 @@ class _SidebarState extends State<Sidebar> {
           Radius.circular(7.0),
         ),
       ),
-      onPressed: () {
+      onPressed: () async{
         signOutGoogle();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) {

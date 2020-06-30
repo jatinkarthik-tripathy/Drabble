@@ -8,12 +8,20 @@ class Auth extends StatefulWidget {
   _AuthState createState() => _AuthState();
 }
 
-class _AuthState extends State<Auth> {
+class _AuthState extends State<Auth> with TickerProviderStateMixin {
   String name;
   String imageUrl;
   String uid;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Animation<int> _characterCount;
+
+  int _stringIndex;
+  static const List<String> _kStrings = const <String>[
+    'Let your thoughts run free ...',
+  ];
+  String get _currentString => _kStrings[_stringIndex % _kStrings.length];
 
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -46,18 +54,57 @@ class _AuthState extends State<Auth> {
   }
 
   @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    AnimationController controller = new AnimationController(
+      duration: const Duration(milliseconds: 4000),
+      vsync: this,
+    );
+    setState(() {
+      _stringIndex = _stringIndex == null ? 0 : _stringIndex + 1;
+      _characterCount = new StepTween(begin: 0, end: _currentString.length)
+          .animate(
+              new CurvedAnimation(parent: controller, curve: Curves.easeIn));
+    });
+    await controller.forward();
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Theme.of(context).primaryColor,
+        color: Color(0xFFF7F8F3),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Image(
-                  image: AssetImage("assets/images/drabble.png"),
-                  height: 100.0),
+                image: AssetImage("assets/drabble_icon.png"),
+                height: 75.0,
+              ),
+              SizedBox(height: 25),
+              Image(
+                image: AssetImage("assets/images/drabble.png"),
+                height: 100.0,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 50.0, horizontal: 10.0),
+                child: _characterCount == null
+                    ? null
+                    : AnimatedBuilder(
+                        animation: _characterCount,
+                        builder: (BuildContext context, Widget child) {
+                          String text = _currentString.substring(
+                              0, _characterCount.value);
+                          return Text(
+                            text,
+                            style: TextStyle(fontSize: 30),
+                          );
+                        },
+                      ),
+              ),
               SizedBox(height: 50),
               _signInButton(),
             ],
@@ -76,11 +123,10 @@ class _AuthState extends State<Auth> {
             MaterialPageRoute(
               builder: (context) {
                 return HomePage(
-                  title: "Drabbles",
-                  uid: uid,
-                  name: name,
-                  imageUrl: imageUrl
-                );
+                    title: "Drabbles",
+                    uid: uid,
+                    name: name,
+                    imageUrl: imageUrl);
               },
             ),
           );
@@ -88,7 +134,7 @@ class _AuthState extends State<Auth> {
       },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
       highlightElevation: 0,
-      borderSide: BorderSide(color: Theme.of(context).backgroundColor),
+      borderSide: BorderSide(color: Color(0xFF2C3D63)),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: Row(
