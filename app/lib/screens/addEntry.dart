@@ -61,7 +61,10 @@ class _EntryState extends State<Entry> {
   saveAlertDialog(BuildContext context) {
     Widget continueButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Done"),
+      child: Text(
+        "Done",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -91,7 +94,10 @@ class _EntryState extends State<Entry> {
         "Saved",
         style: TextStyle(color: Theme.of(context).backgroundColor),
       ),
-      content: Text("Your Drabble has been saved"),
+      content: Text(
+        "Your Drabble has been saved",
+        style: TextStyle(color: Theme.of(context).backgroundColor),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -116,7 +122,10 @@ class _EntryState extends State<Entry> {
   cancelAlertDialog(BuildContext context) {
     Widget cancelButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("No"),
+      child: Text(
+        "No",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -126,7 +135,10 @@ class _EntryState extends State<Entry> {
     );
     Widget continueButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Yes"),
+      child: Text(
+        "Yes",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -156,7 +168,10 @@ class _EntryState extends State<Entry> {
         "Close Drabble",
         style: TextStyle(color: Theme.of(context).backgroundColor),
       ),
-      content: Text("Do you want to save and close?"),
+      content: Text(
+        "Do you want to save and close?",
+        style: TextStyle(color: Theme.of(context).backgroundColor),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -183,8 +198,9 @@ class _EntryState extends State<Entry> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // resizeToAvoidBottomInset: false,
+        backgroundColor: Theme.of(context).primaryColor,
         drawer: Sidebar(
+          uid: uid,
           name: widget.name,
           imgURL: widget.imageUrl,
         ),

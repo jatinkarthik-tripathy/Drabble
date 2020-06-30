@@ -1,12 +1,41 @@
+import 'package:app/screens/about.dart';
 import 'package:app/screens/auth.dart';
+import 'package:app/util/theme_changer.dart';
+import 'package:app/values/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Sidebar extends StatelessWidget {
+class Sidebar extends StatefulWidget {
+  final String uid;
   final String name;
   final String imgURL;
-  Sidebar({this.name, this.imgURL});
+  Sidebar({this.uid, this.name, this.imgURL});
+
+  @override
+  _SidebarState createState() => _SidebarState(
+        uid: uid,
+        name: name,
+        imgURL: imgURL,
+      );
+}
+
+class _SidebarState extends State<Sidebar> {
+  final String uid;
+  final String name;
+  final String imgURL;
+  _SidebarState({this.uid, this.name, this.imgURL});
   final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  void onThemeChanged(bool value, ThemeNotifier themeNotifier) async {
+    (value)
+        ? themeNotifier.setTheme(darkTheme)
+        : themeNotifier.setTheme(lightTheme);
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setBool('darkMode', value);
+  }
+
   void signOutGoogle() async {
     await googleSignIn.signOut();
   }
@@ -14,7 +43,10 @@ class Sidebar extends StatelessWidget {
   _logoutAlert(BuildContext context) {
     Widget yesBut = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Yes"),
+      child: Text(
+        "Yes",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -31,7 +63,10 @@ class Sidebar extends StatelessWidget {
     );
     Widget noBut = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("No"),
+      child: Text(
+        "No",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -46,7 +81,10 @@ class Sidebar extends StatelessWidget {
         "Delete Drabble",
         style: TextStyle(color: Theme.of(context).backgroundColor),
       ),
-      content: Text("Do you want to log out?"),
+      content: Text(
+        "Do you want to log out?",
+        style: TextStyle(color: Theme.of(context).backgroundColor),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -70,6 +108,8 @@ class Sidebar extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    bool _darkTheme = (themeNotifier.getTheme() == darkTheme);
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
       height: MediaQuery.of(context).size.height,
@@ -85,14 +125,15 @@ class Sidebar extends StatelessWidget {
         left: MediaQuery.of(context).size.width * 0.1,
         right: MediaQuery.of(context).size.width * 0.1,
       ),
-      child: ListView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               CircleAvatar(
                 backgroundImage: NetworkImage(
-                  imgURL,
+                  widget.imgURL,
                 ),
                 radius: 45,
                 backgroundColor: Colors.transparent,
@@ -108,7 +149,7 @@ class Sidebar extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    name,
+                    widget.name,
                     style: TextStyle(
                       color: Theme.of(context).accentColor,
                       fontSize: 30,
@@ -155,7 +196,32 @@ class Sidebar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
+            height: MediaQuery.of(context).size.height * 0.015,
+          ),
+          Row(
+            children: <Widget>[
+              Switch(
+                value: _darkTheme,
+                onChanged: (value) {
+                  setState(() {
+                    _darkTheme = value;
+                  });
+                  onThemeChanged(value, themeNotifier);
+                },
+                activeColor: Theme.of(context).accentColor,
+                inactiveTrackColor: Theme.of(context).primaryColor,
+                inactiveThumbColor: Theme.of(context).accentColor,
+              ),
+              Text(
+                "Dark Mode",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: MediaQuery.of(context).size.height * 0.025),
+              )
+            ],
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.015,
           ),
           InkWell(
             child: Text(
@@ -171,7 +237,7 @@ class Sidebar extends StatelessWidget {
             },
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.3,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,7 +264,19 @@ class Sidebar extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.info_outline),
                 color: Theme.of(context).primaryColor,
-                onPressed: () => {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return About(
+                          uid: widget.uid,
+                          name: widget.name,
+                          imageUrl: widget.imgURL,
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           )

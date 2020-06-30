@@ -38,7 +38,10 @@ class _HomePageState extends State<HomePage> {
   _deleteAlert(BuildContext context, DocumentSnapshot doc) {
     Widget yesBut = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Yes"),
+      child: Text(
+        "Yes",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -51,7 +54,10 @@ class _HomePageState extends State<HomePage> {
     );
     Widget noBut = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("No"),
+      child: Text(
+        "No",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -66,7 +72,10 @@ class _HomePageState extends State<HomePage> {
         "Delete Drabble",
         style: TextStyle(color: Theme.of(context).backgroundColor),
       ),
-      content: Text("Do you want to permanently delete your Drabble?"),
+      content: Text(
+        "Do you want to permanently delete your Drabble?",
+        style: TextStyle(color: Theme.of(context).backgroundColor),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -92,7 +101,10 @@ class _HomePageState extends State<HomePage> {
   _showPoem(BuildContext context, DocumentSnapshot doc) {
     Widget continueButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Close"),
+      child: Text(
+        "Close",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -104,7 +116,10 @@ class _HomePageState extends State<HomePage> {
     );
     Widget editButton = FlatButton(
       color: Theme.of(context).backgroundColor,
-      child: Text("Edit"),
+      child: Text(
+        "Edit",
+        style: TextStyle(color: Theme.of(context).primaryColor),
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(7.0),
@@ -178,7 +193,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
         drawer: Sidebar(
+          uid: uid,
           name: name,
           imgURL: imageUrl,
         ),
@@ -243,13 +260,14 @@ class _HomePageState extends State<HomePage> {
                       return Container(
                         width: MediaQuery.of(context).size.width * 0.7,
                         height: MediaQuery.of(context).size.height * 0.1,
-                        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.01,),
-                        margin: EdgeInsets.fromLTRB(
+                        padding: EdgeInsets.all(
                           MediaQuery.of(context).size.height * 0.01,
-                          0,
-                          MediaQuery.of(context).size.height * 0.01,
-                          0
                         ),
+                        margin: EdgeInsets.fromLTRB(
+                            MediaQuery.of(context).size.height * 0.01,
+                            0,
+                            MediaQuery.of(context).size.height * 0.01,
+                            0),
                         child: Column(
                           children: <Widget>[
                             Row(
@@ -315,78 +333,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-// CustomScrollView(
-//           slivers: <Widget>[
-//             SliverAppBar(
-//               expandedHeight: 200.0,
-//               floating: true,
-//               snap: true,
-//               pinned: true,
-//               backgroundColor: Theme.of(context).primaryColor,
-//               flexibleSpace: FlexibleSpaceBar(
-//                 centerTitle: true,
-//                 titlePadding: EdgeInsets.only(top: 10),
-//                 title: Text(
-//                   "Drabble",
-//                   style: TextStyle(
-//                     color: Theme.of(context).accentColor,
-//                     fontSize: 35,
-//                   ),
-//                 ),
-//               ),
-//               elevation: 0,
-//               centerTitle: true,
-//               actions: <Widget>[
-//                 // new IconButton(
-//                 //   icon: Icon(Icons.search),
-//                 //   color: Theme.of(context).backgroundColor,
-//                 //   onPressed: () => {},
-//                 // ),
-//                 new IconButton(
-//                     icon: Icon(Icons.add),
-//                     color: Theme.of(context).backgroundColor,
-//                     onPressed: _addEntry),
-//               ],
-//             ),
-//             SliverFillRemaining(
-//               child: FractionallySizedBox(
-//                 heightFactor: 0.91,
-//                 alignment: Alignment.bottomCenter,
-//                 child: Container(
-//                   margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
-//                   decoration: new BoxDecoration(
-//                     color: Theme.of(context).backgroundColor,
-//                     borderRadius: new BorderRadius.all(
-//                       Radius.circular(40),
-//                     ),
-//                   ),
-//                   child: StreamBuilder<QuerySnapshot>(
-//                     stream: firestoreInstance.collection(uid).snapshots(),
-//                     builder: (BuildContext context,
-//                         AsyncSnapshot<QuerySnapshot> snapshot) {
-//                       if (snapshot.hasError)
-//                         return new Text('Error: ${snapshot.error}');
-//                       switch (snapshot.connectionState) {
-//                         case ConnectionState.waiting:
-//                           return new Text('Loading...');
-//                         default:
-//                           return ListView(
-//                             children: snapshot.data.documents
-//                                 .map((DocumentSnapshot document) {
-//                               return Container(
-//                                 width: 200,
-//                                 height: 20,
-//                                 child: Text(document["title"]),
-//                                 color: Theme.of(context).accentColor,
-//                               );
-//                             }).toList(),
-//                           );
-//                       } // Switch
-//                     }, // Builder
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),

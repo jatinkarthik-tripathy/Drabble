@@ -1,28 +1,40 @@
 import 'package:app/screens/auth.dart';
 import 'package:app/screens/home.dart';
+import 'package:app/util/theme_changer.dart';
+import 'package:app/values/themes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animated_splash/animated_splash.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(
-    MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: AnimatedSplash(
-        imagePath: 'assets/images/drabble.png',
-        home: MyApp(),
-        duration: 3000,
-        type: AnimatedSplashType.StaticDuration,
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.getInstance().then((prefs) {
+    bool darkModeOn = prefs.getBool('darkMode') ?? true;
+    runApp(
+      ChangeNotifierProvider<ThemeNotifier>(
+        create: (_) => ThemeNotifier(darkModeOn ? darkTheme : lightTheme),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: AnimatedSplash(
+            imagePath: 'assets/images/drabble.png',
+            home: MyApp(),
+            duration: 3000,
+            type: AnimatedSplashType.StaticDuration,
+          ),
+        ),
       ),
-    ),
-  );
+    );
+  });
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
         statusBarColor: Color(0xFFF7F8F3),
@@ -35,11 +47,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Drabble',
-      theme: ThemeData(
-        backgroundColor: Color(0xFF2C3D63),
-        primaryColor: Color(0xFFF7F8F3),
-        accentColor: Color(0xFFFF6F5E),
-      ),
+      theme: themeNotifier.getTheme(),
       home: Root(),
     );
   }
