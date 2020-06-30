@@ -18,15 +18,6 @@ class About extends StatelessWidget {
           imgURL: imageUrl,
         ),
         appBar: AppBar(
-          title: Text(
-            "Drabble",
-            style: TextStyle(
-              color: Theme.of(context).accentColor,
-              fontSize: MediaQuery.of(context).size.height * 0.05,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          centerTitle: true,
           elevation: 0,
           actions: <Widget>[
             IconButton(
@@ -60,9 +51,80 @@ class About extends StatelessWidget {
               Radius.circular(20),
             ),
           ),
-          child: Text("data"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image(
+                    image: AssetImage("assets/drabble_icon.png"),
+                    height: 75.0,
+                  ),
+                  Image(
+                    image: AssetImage("assets/images/drabble.png"),
+                    height: 50.0,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.06,
+              ),
+              Column(
+                children: <Widget>[
+                  Text(
+                    "Reach out to us!",
+                    style: TextStyle(
+                        fontSize: 35, color: Theme.of(context).primaryColor),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.03,
+                  ),
+                  Text(
+                    "Dev by Jatin Karthik T",
+                    style: TextStyle(
+                        fontSize: 25, color: Theme.of(context).primaryColor),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Text(
+                    "jatinkarthikt@gmail.com",
+                    style: TextStyle(
+                        fontSize: 15, color: Theme.of(context).primaryColor),
+                  ),
+                  Text(
+                    "github.com/jatinkarthik-tripathy",
+                    style: TextStyle(
+                        fontSize: 15, color: Theme.of(context).primaryColor),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                  ),
+                  Text(
+                    "Design by Yoha Ashuthosh K",
+                    style: TextStyle(
+                        fontSize: 25, color: Theme.of(context).primaryColor),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.02,
+                  ),
+                  Text(
+                    "yoha21500@gmail.com",
+                    style: TextStyle(
+                        fontSize: 15, color: Theme.of(context).primaryColor),
+                  ),
+                  Text(
+                    "www.instagram.com/yoha21500",
+                    style: TextStyle(
+                        fontSize: 15, color: Theme.of(context).primaryColor),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
-
       ),
     );
   }
