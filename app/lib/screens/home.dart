@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       content: Container(
-        width: MediaQuery.of(context).size.width * 0.6,
+        width: MediaQuery.of(context).size.width * 0.7,
         height: MediaQuery.of(context).size.height * 0.6,
         child: Column(
           children: <Widget>[

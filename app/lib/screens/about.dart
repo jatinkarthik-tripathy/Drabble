@@ -12,47 +12,23 @@ class About extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xFF2C3D63),
         drawer: Sidebar(
           name: name,
           imgURL: imageUrl,
-        ),
-        appBar: AppBar(
-          elevation: 0,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.cancel),
-              color: Theme.of(context).backgroundColor,
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return HomePage(
-                        title: "Drabbles",
-                        uid: uid,
-                        name: name,
-                        imageUrl: imageUrl,
-                      );
-                    },
-                  ),
-                  ModalRoute.withName('/'),
-                );
-              },
-            ),
-          ],
         ),
         body: Container(
           margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
           padding: EdgeInsets.all(30),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
+            color: Color(0xFFF7F8F3),
             borderRadius: BorderRadius.all(
               Radius.circular(20),
             ),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -75,53 +51,72 @@ class About extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     "Reach out to us!",
-                    style: TextStyle(
-                        fontSize: 35, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.04, color: Color(0xFF2C3D63)),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.03,
                   ),
                   Text(
                     "Dev by Jatin Karthik T",
-                    style: TextStyle(
-                        fontSize: 25, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.025, color: Color(0xFF2C3D63)),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Text(
                     "jatinkarthikt@gmail.com",
-                    style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.02, color: Color(0xFF2C3D63)),
                   ),
                   Text(
                     "github.com/jatinkarthik-tripathy",
-                    style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.02, color: Color(0xFF2C3D63)),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
                   Text(
                     "Design by Yoha Ashuthosh K",
-                    style: TextStyle(
-                        fontSize: 25, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.025, color: Color(0xFF2C3D63)),
                   ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Text(
                     "yoha21500@gmail.com",
-                    style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.02, color: Color(0xFF2C3D63)),
                   ),
                   Text(
                     "www.instagram.com/yoha21500",
-                    style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).primaryColor),
+                    style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.02, color: Color(0xFF2C3D63)),
                   ),
                 ],
-              )
+              ),
+              Container(
+                decoration: new BoxDecoration(
+                  color: Colors.transparent,
+                  shape: BoxShape.circle,
+                  border: Border.all(color:  Color(0xFF2C3D63), width: 2)
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.chevron_left),
+                  color: Color(0xFF2C3D63),
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return HomePage(
+                            title: "Drabbles",
+                            uid: uid,
+                            name: name,
+                            imageUrl: imageUrl,
+                          );
+                        },
+                      ),
+                      ModalRoute.withName('/'),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),

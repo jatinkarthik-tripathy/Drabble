@@ -9,6 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'home.dart';
+
 class Sidebar extends StatefulWidget {
   final String uid;
   final String name;
@@ -171,13 +173,30 @@ class _SidebarState extends State<Sidebar> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.15,
           ),
-          Text(
-            "Home",
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: 35,
+          InkWell(
+            child: Text(
+              "Home",
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
+                fontSize: 35,
+              ),
+              textAlign: TextAlign.left,
             ),
-            textAlign: TextAlign.left,
+            onTap: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return HomePage(
+                        title: "Drabbles",
+                        uid: uid,
+                        name: name,
+                        imageUrl: imgURL,
+                      );
+                    },
+                  ),
+                  ModalRoute.withName('/'),
+                );
+              },
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,

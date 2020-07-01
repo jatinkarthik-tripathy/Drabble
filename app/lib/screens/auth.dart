@@ -100,7 +100,7 @@ class _AuthState extends State<Auth> with TickerProviderStateMixin {
                               0, _characterCount.value);
                           return Text(
                             text,
-                            style: TextStyle(fontSize: 30),
+                            style: TextStyle(fontSize: MediaQuery.of(context).size.height*0.025),
                           );
                         },
                       ),
