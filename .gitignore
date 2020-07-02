@@ -1,1 +1,3 @@
 app/android/app/google-services.json
+app/android/app/key.jks
+app/android/key.properties
