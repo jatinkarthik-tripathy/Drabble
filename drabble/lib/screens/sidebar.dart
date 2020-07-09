@@ -156,14 +156,14 @@ class _SidebarState extends State<Sidebar> {
                     "Welcome,",
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
-                      fontSize: 15,
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
                     ),
                   ),
                   Text(
                     widget.name,
                     style: TextStyle(
                       color: Theme.of(context).accentColor,
-                      fontSize: 30,
+                      fontSize: MediaQuery.of(context).size.width * 0.05,
                     ),
                   ),
                 ],

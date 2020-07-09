@@ -37,7 +37,6 @@ class _EntryState extends State<Entry> {
     if (doc != null) {
       _titleController.text = doc["title"];
       _bodyController.text = doc["body"];
-      doc.reference.delete();
     }
   }
 
@@ -50,7 +49,10 @@ class _EntryState extends State<Entry> {
   }
 
   void _addEntry() {
-    if (_titleController.text != "" && _bodyController.text != "") {
+    if (doc != null) {
+      doc.reference.delete();
+    }
+    if (_titleController.text != "" || _bodyController.text != "") {
       Firestore.instance.collection(widget.uid).add({
         "title": _titleController.text,
         "body": _bodyController.text

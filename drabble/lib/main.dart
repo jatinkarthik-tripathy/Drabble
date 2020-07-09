@@ -69,7 +69,6 @@ class _RootState extends State<Root> {
       uid = _user.uid;
       name = _user.displayName;
       imageUrl = _user.photoUrl;
-      print(name);
       if (name.contains(" ")) {
         name = name.substring(0, name.indexOf(" "));
       }
