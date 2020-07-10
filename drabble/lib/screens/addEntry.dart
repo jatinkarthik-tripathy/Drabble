@@ -2,6 +2,7 @@ import 'package:drabble/screens/home.dart';
 import 'package:drabble/screens/sidebar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 
 class Entry extends StatefulWidget {
   final String name;
@@ -30,13 +31,26 @@ class _EntryState extends State<Entry> {
 
   _EntryState({this.uid, this.name, this.imageUrl, this.doc});
 
+  var cryptor;
+  var salt;
+  var password;
+  var generatedKey;
+
   void initState() {
     super.initState();
     _titleController = TextEditingController();
     _bodyController = TextEditingController();
+
+    initPlatformState();
+  }
+
+  initPlatformState() async {
+    cryptor = new PlatformStringCryptor();
+    salt = "Ee/aHwc))8&actQ00sm/0A-="; // await cryptor.generateSalt();
+    password = uid;
+    generatedKey = await cryptor.generateKeyFromPassword(password, salt);
     if (doc != null) {
-      _titleController.text = doc["title"];
-      _bodyController.text = doc["body"];
+      await _decrypt(doc);
     }
   }
 
@@ -48,14 +62,30 @@ class _EntryState extends State<Entry> {
     super.dispose();
   }
 
-  void _addEntry() {
+  Future<List<String>> _encrypt() async {
+    String encryptedTitle =
+        await cryptor.encrypt(_titleController.text, generatedKey);
+    String encryptedBody =
+        await cryptor.encrypt(_bodyController.text, generatedKey);
+    print(encryptedTitle);
+    return [encryptedTitle, encryptedBody];
+  }
+
+  _decrypt(DocumentSnapshot doc) async {
+    _titleController.text = await cryptor.decrypt(doc['title'], generatedKey);
+    _bodyController.text = await cryptor.decrypt(doc['body'], generatedKey);
+  }
+
+  void _addEntry() async {
     if (doc != null) {
       doc.reference.delete();
     }
     if (_titleController.text != "" || _bodyController.text != "") {
+      List<String> enc = await _encrypt();
+      print(enc[0]);
       Firestore.instance.collection(widget.uid).add({
-        "title": _titleController.text,
-        "body": _bodyController.text
+        "title": enc[0],
+        "body": enc[1],
       }).then((value) {});
     }
   }

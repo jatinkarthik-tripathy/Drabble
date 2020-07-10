@@ -2,6 +2,7 @@ import 'package:drabble/screens/addEntry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:drabble/screens/sidebar.dart';
+import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -34,6 +35,23 @@ class _HomePageState extends State<HomePage> {
     this.name,
     this.imageUrl,
   });
+
+  var cryptor;
+  var salt;
+  var password;
+  var generatedKey;
+
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  initPlatformState() async {
+    cryptor = new PlatformStringCryptor();
+    salt = "Ee/aHwc))8&actQ00sm/0A-=";
+    password = uid;
+    generatedKey = await cryptor.generateKeyFromPassword(password, salt);
+  }
 
   _deleteAlert(BuildContext context, DocumentSnapshot doc) {
     Widget yesBut = FlatButton(
@@ -146,34 +164,69 @@ class _HomePageState extends State<HomePage> {
       content: Container(
         width: MediaQuery.of(context).size.width * 0.7,
         height: MediaQuery.of(context).size.height * 0.6,
-        child: Column(
-          children: <Widget>[
-            Text(
-              doc["title"],
-              style: TextStyle(
-                color: Theme.of(context).backgroundColor,
-                fontSize: 25,
+        child: Theme(
+          data: Theme.of(context),
+          child: Column(
+            children: <Widget>[
+              FutureBuilder<String>(
+                future: _decrypt(doc["title"]),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  Container titleWidget;
+                  if (snapshot.hasData) {
+                    titleWidget = Container(
+                      child: Text(
+                        snapshot.data,
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(
+                          color: Theme.of(context).backgroundColor,
+                          fontSize: MediaQuery.of(context).size.height * 0.025,
+                        ),
+                      ),
+                    );
+                  } else {
+                    titleWidget = Container(
+                      child: Text(""),
+                    );
+                  }
+                  return titleWidget;
+                },
               ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  Text(
-                    doc["body"],
-                    style: TextStyle(
-                      color: Theme.of(context).backgroundColor,
-                      fontSize: 20,
+              SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                child: ListView(
+                  children: <Widget>[
+                    FutureBuilder<String>(
+                      future: _decrypt(doc["body"]),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        Container bodyWidget;
+                        if (snapshot.hasData) {
+                          bodyWidget = Container(
+                            child: Text(
+                              snapshot.data,
+                              style: TextStyle(
+                                color: Theme.of(context).backgroundColor,
+                                fontSize:
+                                    MediaQuery.of(context).size.height * 0.025,
+                              ),
+                            ),
+                          );
+                        } else {
+                          bodyWidget = Container(
+                            child: Text(""),
+                          );
+                        }
+                        return bodyWidget;
+                      },
                     ),
-                    textAlign: TextAlign.left,
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
       actions: <Widget>[
@@ -187,6 +240,11 @@ class _HomePageState extends State<HomePage> {
       context: context,
       child: alert,
     );
+  }
+
+  Future<String> _decrypt(encrypted) async {
+    final decrypted = await cryptor.decrypt(encrypted, generatedKey);
+    return decrypted;
   }
 
   @override
@@ -275,15 +333,33 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Expanded(
-                                  child: Text(
-                                    document["title"],
-                                    overflow: TextOverflow.fade,
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.025,
-                                    ),
+                                  child: FutureBuilder<String>(
+                                    future: _decrypt(document["title"]),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<String> snapshot) {
+                                      Container titleWidget;
+                                      if (snapshot.hasData) {
+                                        titleWidget = Container(
+                                          child: Text(
+                                            snapshot.data,
+                                            overflow: TextOverflow.fade,
+                                            style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.025,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        titleWidget = Container(
+                                          child: Text(""),
+                                        );
+                                      }
+                                      return titleWidget;
+                                    },
                                   ),
                                 ),
                                 IconButton(
@@ -321,7 +397,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        // color: Theme.of(context).accentColor,
                       );
                     }).toList(),
                   );
