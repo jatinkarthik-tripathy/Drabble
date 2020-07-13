@@ -1,15 +1,15 @@
-import 'package:drabble/screens/addEntry.dart';
+import 'package:drabble/screens/addDiaryEntry.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:drabble/screens/sidebar.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
 
-class HomePage extends StatefulWidget {
+class DiaryPage extends StatefulWidget {
   final String title;
   final String uid;
   final String name;
   final String imageUrl;
-  HomePage({
+  DiaryPage({
     Key key,
     this.title,
     this.uid,
@@ -18,19 +18,19 @@ class HomePage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState(
+  _DiaryPageState createState() => _DiaryPageState(
         uid: uid,
         name: name,
         imageUrl: imageUrl,
       );
 }
 
-class _HomePageState extends State<HomePage> {
+class _DiaryPageState extends State<DiaryPage> {
   String name;
   String imageUrl;
   String uid;
   final firestoreInstance = Firestore.instance;
-  _HomePageState({
+  _DiaryPageState({
     this.uid,
     this.name,
     this.imageUrl,
@@ -147,7 +147,8 @@ class _HomePageState extends State<HomePage> {
         Navigator.of(context, rootNavigator: true).pop('dialog');
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) {
-            return Entry(uid: uid, name: name, imageUrl: imageUrl, doc: doc);
+            return DiaryEntry(
+                uid: uid, name: name, imageUrl: imageUrl, doc: doc);
           },
         ));
       },
@@ -276,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
-                      return Entry(
+                      return DiaryEntry(
                           uid: uid, name: name, imageUrl: imageUrl, doc: null);
                     },
                   ),
@@ -296,7 +297,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           child: StreamBuilder<QuerySnapshot>(
-            stream: firestoreInstance.collection(uid).snapshots(),
+            stream: firestoreInstance
+                .collection(uid)
+                .document("DiaryDoc")
+                .collection("Diary")
+                .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) return Text('Error: ${snapshot.error}');

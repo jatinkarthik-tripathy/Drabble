@@ -1,5 +1,7 @@
 import 'package:drabble/screens/about.dart';
 import 'package:drabble/screens/auth.dart';
+import 'package:drabble/screens/diary.dart';
+import 'package:drabble/screens/home.dart';
 import 'package:drabble/util/theme_changer.dart';
 import 'package:drabble/values/themes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,8 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'home.dart';
 
 class Sidebar extends StatefulWidget {
   final String uid;
@@ -138,134 +138,158 @@ class _SidebarState extends State<Sidebar> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              CircleAvatar(
-                backgroundImage: NetworkImage(
-                  widget.imgURL,
+          Container(
+            width: MediaQuery.of(context).size.width * 0.7,
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundImage: NetworkImage(
+                    widget.imgURL,
+                  ),
+                  radius: 45,
+                  backgroundColor: Colors.transparent,
                 ),
-                radius: 45,
-                backgroundColor: Colors.transparent,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Text(
-                    "Welcome,",
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      "Welcome,",
+                      style: TextStyle(
+                        color: Theme.of(context).primaryColor,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                    ),
+                    Text(
+                      widget.name,
+                      style: TextStyle(
+                        color: Theme.of(context).accentColor,
+                        fontSize: MediaQuery.of(context).size.width * 0.09,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 30),
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  child: Text(
+                    "Home",
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
-                      fontSize: MediaQuery.of(context).size.width * 0.05,
+                      fontSize: 35,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return HomePage(
+                            title: "Drabbles",
+                            uid: uid,
+                            name: name,
+                            imageUrl: imgURL,
+                          );
+                        },
+                      ),
+                      ModalRoute.withName('/'),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                InkWell(
+                  child: Text(
+                    "Dear Diary",
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontSize: 35,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return DiaryPage(
+                            title: "Drabbles",
+                            uid: uid,
+                            name: name,
+                            imageUrl: imgURL,
+                          );
+                        },
+                      ),
+                      ModalRoute.withName('/'),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "Dark Mode",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: MediaQuery.of(context).size.height * 0.025),
+                    ),
+                    Switch(
+                      value: _darkTheme,
+                      onChanged: (value) {
+                        setState(() {
+                          _darkTheme = value;
+                        });
+                        onThemeChanged(value, themeNotifier);
+                      },
+                      activeColor: Theme.of(context).accentColor,
+                      inactiveTrackColor: Theme.of(context).primaryColor,
+                      inactiveThumbColor: Theme.of(context).accentColor,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: new BorderRadius.all(
+                        Radius.circular(5),
+                      ),
                     ),
                   ),
-                  Text(
-                    widget.name,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                InkWell(
+                  child: Text(
+                    "Logout",
                     style: TextStyle(
                       color: Theme.of(context).accentColor,
-                      fontSize: MediaQuery.of(context).size.width * 0.05,
+                      fontSize: 35,
                     ),
+                    textAlign: TextAlign.left,
                   ),
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.15,
-          ),
-          InkWell(
-            child: Text(
-              "Home",
-              style: TextStyle(
-                color: Theme.of(context).primaryColor,
-                fontSize: 35,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            onTap: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return HomePage(
-                        title: "Drabbles",
-                        uid: uid,
-                        name: name,
-                        imageUrl: imgURL,
-                      );
-                    },
-                  ),
-                  ModalRoute.withName('/'),
-                );
-              },
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.02,
-          ),
-          // Text(
-          //   "Dear Diary",
-          //   style: TextStyle(
-          //     color: Theme.of(context).primaryColor,
-          //     fontSize: 35,
-          //   ),
-          //   textAlign: TextAlign.left,
-          // ),
-          // SizedBox(
-          //   height: 15,
-          // ),
-          Row(
-            children: <Widget>[
-              Text(
-                "Dark Mode",
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontSize: MediaQuery.of(context).size.height * 0.025),
-              ),
-              Switch(
-                value: _darkTheme,
-                onChanged: (value) {
-                  setState(() {
-                    _darkTheme = value;
-                  });
-                  onThemeChanged(value, themeNotifier);
-                },
-                activeColor: Theme.of(context).accentColor,
-                inactiveTrackColor: Theme.of(context).primaryColor,
-                inactiveThumbColor: Theme.of(context).accentColor,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.015,
-          ),
-          SizedBox(
-            height: 5,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: new BorderRadius.all(
-                  Radius.circular(5),
+                  onTap: () {
+                    _logoutAlert(context);
+                  },
                 ),
-              ),
+              ],
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.015,
-          ),
-          InkWell(
-            child: Text(
-              "Logout",
-              style: TextStyle(
-                color: Theme.of(context).accentColor,
-                fontSize: 35,
-              ),
-              textAlign: TextAlign.left,
-            ),
-            onTap: () {
-              _logoutAlert(context);
-            },
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.25,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -307,6 +331,9 @@ class _SidebarState extends State<Sidebar> {
                 },
               ),
             ],
+          ),
+          SizedBox(
+            height: 50,
           )
         ],
       ),
