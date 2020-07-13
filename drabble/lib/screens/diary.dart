@@ -217,7 +217,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           );
                         } else {
                           bodyWidget = Container(
-                            child: Text(""),
+                            child: Text("No "),
                           );
                         }
                         return bodyWidget;

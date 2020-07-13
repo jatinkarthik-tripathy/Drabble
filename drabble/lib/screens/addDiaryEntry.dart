@@ -3,6 +3,7 @@ import 'package:drabble/screens/sidebar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_string_encryption/flutter_string_encryption.dart';
+import 'package:intl/intl.dart';
 
 class DiaryEntry extends StatefulWidget {
   final String name;
@@ -26,9 +27,9 @@ class _DiaryEntryState extends State<DiaryEntry> {
   final String imageUrl;
   final String uid;
   final DocumentSnapshot doc;
-  TextEditingController _titleController;
   TextEditingController _bodyController;
-  
+  DateTime now;
+  String formattedDate;
 
   _DiaryEntryState({this.uid, this.name, this.imageUrl, this.doc});
 
@@ -39,8 +40,9 @@ class _DiaryEntryState extends State<DiaryEntry> {
 
   void initState() {
     super.initState();
-    _titleController = TextEditingController();
     _bodyController = TextEditingController();
+    now = DateTime.now();
+    formattedDate = DateFormat('EEE d MMM \t kk:mm:ss  ').format(now);
 
     initPlatformState();
   }
@@ -58,14 +60,12 @@ class _DiaryEntryState extends State<DiaryEntry> {
   @override
   void dispose() {
     // other dispose methods
-    _titleController.dispose();
     _bodyController.dispose();
     super.dispose();
   }
 
   Future<List<String>> _encrypt() async {
-    String encryptedTitle =
-        await cryptor.encrypt(_titleController.text, generatedKey);
+    String encryptedTitle = await cryptor.encrypt(formattedDate, generatedKey);
     String encryptedBody =
         await cryptor.encrypt(_bodyController.text, generatedKey);
     print(encryptedTitle);
@@ -73,7 +73,7 @@ class _DiaryEntryState extends State<DiaryEntry> {
   }
 
   _decrypt(DocumentSnapshot doc) async {
-    _titleController.text = await cryptor.decrypt(doc['title'], generatedKey);
+    formattedDate = await cryptor.decrypt(doc['title'], generatedKey);
     _bodyController.text = await cryptor.decrypt(doc['body'], generatedKey);
   }
 
@@ -81,7 +81,7 @@ class _DiaryEntryState extends State<DiaryEntry> {
     if (doc != null) {
       doc.reference.delete();
     }
-    if (_titleController.text != "" || _bodyController.text != "") {
+    if (_bodyController.text != "") {
       List<String> enc = await _encrypt();
       print(enc[0]);
       Firestore.instance
@@ -312,34 +312,15 @@ class _DiaryEntryState extends State<DiaryEntry> {
             child: Column(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.all(15),
-                  margin: EdgeInsets.all(10),
-                  child: TextField(
-                    controller: _titleController,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: 25,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: "Title",
-                      hintStyle: TextStyle(
+                    padding: EdgeInsets.all(15),
+                    margin: EdgeInsets.all(10),
+                    child: Text(
+                      formattedDate,
+                      style: TextStyle(
                         color: Theme.of(context).primaryColor,
+                        fontSize: 25,
                       ),
-                      border: new UnderlineInputBorder(
-                        borderSide: new BorderSide(
-                            color: Theme.of(context).primaryColor),
-                      ),
-                      focusedBorder: new UnderlineInputBorder(
-                        borderSide: new BorderSide(
-                            color: Theme.of(context).primaryColor),
-                      ),
-                      enabledBorder: new UnderlineInputBorder(
-                        borderSide: new BorderSide(
-                            color: Theme.of(context).primaryColor),
-                      ),
-                    ),
-                  ),
-                ),
+                    )),
                 Expanded(
                   child: ListView(children: <Widget>[
                     Container(
